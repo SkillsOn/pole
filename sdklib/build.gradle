@@ -1,0 +1,121 @@
+apply plugin: 'com.android.library'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.4.2'
+    }
+}
+
+group = 'com.pushpole.android'
+
+android {
+    // read compileSdkVersion and buildToolsVersion from project root gradle file
+    compileSdkVersion 26
+    buildToolsVersion "28.0.3"
+
+    defaultConfig {
+        // read minSdkVersion and targetSdkVersion from project root gradle file
+        minSdkVersion 14 //TODO!
+        targetSdkVersion 26
+
+        versionCode release.versionCode
+        versionName release.versionName
+        // for merging dependencies proguard
+        consumerProguardFiles 'proguard-rules-test.pro'
+        //this proguard will be delivered to the released aar file
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        releaseForTest { //release with log enabled and  obfuscation
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-test.pro'
+            zipAlignEnabled true //this is true by default for release builds.
+        }
+        releaseForBintray { //release with no log and obfuscating names for end users
+            minifyEnabled true
+            //shrinkResources true  //this option works with gradle 2.0.+
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules-release.pro'
+            consumerProguardFiles 'proguard-consumer.pro'
+            zipAlignEnabled true //this is true by default for release builds.
+        }
+
+        // contains all things
+        debug {
+            debuggable true
+            testCoverageEnabled = false
+            versionNameSuffix '-debug'
+        }
+
+        release{
+            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-test.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules-release.pro'
+            consumerProguardFiles 'proguard-consumer.pro'
+            testCoverageEnabled = false
+            zipAlignEnabled true
+        }
+    }
+
+    // ignoring lint
+    lintOptions {
+        // set to true to turn off analysis progress reporting by lint
+        quiet true
+        // if true, stop the gradle build if errors are found
+        abortOnError false
+        // if true, only report errors
+        ignoreWarnings true
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.gms:play-services-ads:16.0.0'
+    implementation 'com.evernote:android-job:1.2.6'
+    implementation 'com.android.support:support-compat:26.0.0'
+    implementation 'com.android.support:support-v4:26.1.0'
+
+    implementation 'com.google.firebase:firebase-messaging:17.4.0'
+    implementation 'com.google.android.gms:play-services-gcm:16.0.0'
+
+
+
+//    implementation files('libs/android-job-1.1.12.jar')//for standalone release
+//    implementation files('libs/cat-1.0.5.jar')//for standalone release
+
+    androidTestImplementation 'com.android.support.test:runner:0.5'
+    androidTestImplementation 'org.mockito:mockito-core:1.10.19'
+    androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'
+    androidTestImplementation 'com.google.dexmaker:dexmaker-mockito:1.2'
+
+    // required packages for jdk unit testing
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+    testImplementation 'org.robolectric:robolectric:3.4.2'
+}
+
+task createjavadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    exclude '**/BuildConfig.java'
+    exclude '**/R.java'
+}
+
+
+ext {
+    artifact = "pushpole-base" // com.pushpole.android:this_one:version
+    bintrayName = 'pushpole-base-legacy' // The name in the bintray
+    libraryName = "pushpolelib"
+    libraryDescription = "PushPole base module"
+    uploadSources = true
+}
+
+apply from : "$rootProject.projectDir/bintray-android.gradle"
+apply from : "$rootProject.projectDir/publish.gradle"

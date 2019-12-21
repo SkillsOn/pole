@@ -1,0 +1,14 @@
+<resources>
+    <string name="pushpole_app_name">پوشه</string>
+    <string name="pushpole_close_dialog">بستن</string>
+    <string name="pushpole_missing_google_play_services_text">لطفا برای استفاده کامل از برنامه \"گوگل پلی سرویس\" را نصب کنید.</string>
+    <string name="pushpole_missing_google_play_services_title">ارتقا</string>
+    <string name="pushpole_missing_google_play_services_dismiss">نه</string>
+    <string name="pushpole_missing_google_play_services_install">نصب و ارتقا</string>
+    <string name="pushpole_starting_apk_download">دانلود apk ...</string>
+    <string name="pushpole_starting_apk_download_title">دانلود</string>
+    <string name="cancel">لغو</string>
+    <string name="pushpole_imei_dialog_cancel">نه، نمی پذیرم</string>
+    <string name="pushpole_imei_dialog_accept">بله، می پذیرم</string>
+
+</resources>
